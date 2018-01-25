@@ -4,6 +4,11 @@ var socket = io();
 
 console.log(name + ' wants to join ' + room);
 
+jQuery('.user-name').append(name);
+jQuery('.room-name').append(room);
+
+
+
 socket.on('connect', function () {
 	console.log('Conncted to socket.io server!');
 });
