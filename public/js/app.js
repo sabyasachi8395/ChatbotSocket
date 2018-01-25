@@ -1,3 +1,5 @@
+var name=getQueryVariable('name');
+var room=getQueryVariable('room');
 var socket = io();
 
 socket.on('connect', function () {
