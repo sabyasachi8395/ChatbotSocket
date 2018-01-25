@@ -18,7 +18,7 @@ io.on('connection', function (socket) {
 		socket.join(req.room);
 		socket.broadcast.to(req.room).emit('message', {
 			name: 'System',
-			text: req.name + ' has joined!',
+			text: req.name + ' has joined into ' + req.room,
 			timestamp: moment().valueOf()
 		});
 	});
