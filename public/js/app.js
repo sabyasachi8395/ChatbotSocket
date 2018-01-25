@@ -11,6 +11,10 @@ jQuery('.room-name').append(room);
 
 socket.on('connect', function () {
 	console.log('Conncted to socket.io server!');
+	socket.emit('joinRoom', {
+		name : name,
+		room : room
+	});
 });
 
 socket.on('message', function (message) {
