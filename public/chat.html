@@ -3,15 +3,29 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Chat Applicatio | Chat Page</title>
+		<script type="text/javascript">
+			function validate() {
+				var msg = document.getElementById("message").value;
+				var send=document.getElementById("send");
+				
+				if (msg != "") {
+					//alert("msg");
+					
+					send.disabled=false;
+				} else {
+					send.disabled=true;
+				}
+			}
+		</script>
 	</head>
 	<body>
-		<a href="index.html">Change your chat-name</a><br><br>
+		<a href="index.html">Exit from current chat</a><br><br>
 
 		<h3 class="user-name">Joined as : </h3>
 		<h3 class="room-name">Room Name  : </h3>
 		<form id="message-form">
-			<input type="text" name="message" id="message"/>
-			<input type="submit" value="Send"/>	
+			<input type="text" name="message" id="message" onkeypress="validate()" />
+			<input type="submit" value="Send" id="send" disabled="disabled" onclick="check()" />	
 		</form>
 
 		<div class="messages">

@@ -3,6 +3,20 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Chat Applicatio | Join Page</title>
+		<script type="text/javascript">
+			function validate() {
+				var name = document.getElementById("name").value;
+				var room = document.getElementById("room").value;
+				if (name == "") {
+					alert("Enter your username");
+					return false;
+				}
+				if (room == "") {
+					alert("Enter your room name.");
+					return false;
+				}
+			}
+		</script>
 	</head>
 	<body>
 		<center><h1>Join Page</h1>
