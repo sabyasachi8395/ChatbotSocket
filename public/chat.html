@@ -21,19 +21,31 @@
 		</script>
 	</head>
 	<body>
-		<a href="index.html">Exit from current chat</a><br><br>
+		
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 well">
+					<a href="index.html">Exit from current chat</a><br><br>
+					<h3 class="user-name">Joined as : </h3>
+					<h3 class="room-name">Room Name  : </h3>
 
-		<h3 class="user-name">Joined as : </h3>
-		<h3 class="room-name">Room Name  : </h3>
-		<form id="message-form">
-			<input type="text" name="message" id="message"/>
-			<input type="submit" value="Send" id="send" disabled="disabled"/>	
-		</form>
-
-		<div class="messages">
-			<!-- Messages end up here! -->
+					<div class="form-group">
+						<div class="input-group">
+							<form id="message-form">
+								<input type="text" name="message" id="message" placeholder="Type message to send"/>
+								<input type="submit" value="Send" id="send" disabled="disabled"/>	
+							</form>
+						</div>
+					</div>
+					
+					<div class="messages">
+						<!-- Messages end up here! -->
+					</div>
+				</div>
+			</div>
 		</div>
 
+		
 		<script>
 			
 			$(document).ready(function(){
