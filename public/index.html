@@ -6,11 +6,11 @@
 	</head>
 	<body>
 		<center><h1>Join Page</h1>
-		<form action="chat.html">
+		<form action="chat.html" onsubmit="return validate()">
 			<label>Enter you name : </label>
-			<input type="text" name="name">
+			<input type="text" name="name" id="name">
 			<label>Enter the chat room level to join : </label>
-			<input type="text" name="room"></br></br>
+			<input type="text" name="room" id="room"></br></br>
 			<input type="submit" value="Start Chat">
 		</form>
 	</center>
