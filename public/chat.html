@@ -4,8 +4,8 @@
 		<meta charset="UTF-8">
 		<title>Chat Applicatio | Chat Page</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-				<script type="text/javascript">
+		<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript">
 			function validate() {
 				var msg = document.getElementById("message").value;
 				var send=document.getElementById("send");
@@ -26,15 +26,26 @@
 		<h3 class="user-name">Joined as : </h3>
 		<h3 class="room-name">Room Name  : </h3>
 		<form id="message-form">
-			<input type="text" name="message" id="message" onkeypress="validate()" />
-			<input type="submit" value="Send" id="send" disabled="disabled" onclick="check()" />	
+			<input type="text" name="message" id="message"/>
+			<input type="submit" value="Send" id="send" disabled="disabled"/>	
 		</form>
 
 		<div class="messages">
 			<!-- Messages end up here! -->
 		</div>
 
-		<script src="/js/jquery-2.1.4.min.js"></script>
+		<script>
+			
+			$(document).ready(function(){
+
+				$("#message").on('keyup change keypress', function() {
+					validate();
+				}); 
+			});
+
+		</script>
+
+		
 		<script src="/js/socket.io-1.3.7.js"></script>
 		<script src="/js/moment.js"></script>
 		<script src="/js/QueryParams.js"></script>
