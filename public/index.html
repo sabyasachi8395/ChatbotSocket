@@ -3,7 +3,9 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Chat Applicatio | Join Page</title>
-		<script type="text/javascript">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+				<script type="text/javascript">
 			function validate() {
 				var name = document.getElementById("name").value;
 				var room = document.getElementById("room").value;
@@ -21,11 +23,12 @@
 	<body>
 		<center><h1>Join Page</h1>
 		<form action="chat.html" onsubmit="return validate()">
-			<label>Enter you name : </label>
+			<div class="form-group">
+				<label>Enter you name : </label>
 			<input type="text" name="name" id="name">
 			<label>Enter the chat room level to join : </label>
 			<input type="text" name="room" id="room"></br></br>
-			<input type="submit" value="Start Chat">
+			<input type="submit" value="Start Chat"></div>
 		</form>
 	</center>
 	</body>
