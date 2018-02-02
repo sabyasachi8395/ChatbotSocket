@@ -1,5 +1,5 @@
 var name=getQueryVariable('name') || 'Unknown';
-var room=getQueryVariable('room');
+var room=Math.random();
 var socket = io();
 
 console.log(name + ' wants to join ' + room);
