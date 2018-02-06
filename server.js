@@ -12,14 +12,16 @@ app.use(express.static(__dirname + '/public'));
 
 // Set up Conversation service wrapper.
 var conversation = new ConversationV1({
-  username: '74ff7ae4-0311-47ba-8858-a044b5788bf5', // service username
-  password: '7evDTbXdmLHQ', // service password
-  version_date: '2017-05-26'
+  username: '5355f62e-7e8b-4163-8992-9f4f2cc1c7be', // service username
+  password: 'AzP3ow1Ped1H', // service password
+  version_date: '2017-05-26',
+  rejectUnauthorized: false
 });
 
-var workspace_id = 'ad8d0a48-b6e7-4589-a42b-aa27e9718b10'; // workspace ID
+var workspace_id = 'c0c34d11-c4c4-4d19-8001-8e5f8797ce3f'; // workspace ID
 
 var clientInfo = {};
+
 
 // Find the current members of the current group
 function sendCurrentUsers(socket) {
@@ -117,15 +119,34 @@ io.on('connection', function (socket) {
 					timestamp : moment().valueOf()
 				});
 			    console.log('>> System : The current time is ' + new Date().toLocaleTimeString());
+			  } 
+			  else if (response.intents[0].intent === "display_date") {
+			  		io.to(clientInfo[socket.id].room).emit('message', {
+					name : 'System ',
+					text: 'Todays date  is ' + moment().format("Do MMM YYYY"),
+					timestamp : moment().valueOf()
+				});
+			    console.log('>> System : The current time is ' + new Date().toLocaleTimeString());
 			  } else {
 			    // Display the output from dialog, if any.
 			    if (response.output.text.length != 0) {
-			        console.log('>> System : ' + response.output.text[0]);
-			        io.to(clientInfo[socket.id].room).emit('message', {
-						name : 'System ',
-						text: response.output.text[0],
-						timestamp : moment().valueOf()
-					});
+			    	if (response.context.check === true) {
+			    		console.log('>> System : ' + response.output.text[0]);
+				        io.to(clientInfo[socket.id].room).emit('message', {
+							name : 'System ',
+							text: response.output.text[0],
+							res : 'ok',
+							timestamp : moment().valueOf()
+						});
+			    	}
+			    	else {
+				        console.log('>> System : ' + response.output.text[0]);
+				        io.to(clientInfo[socket.id].room).emit('message', {
+							name : 'System ',
+							text: response.output.text[0],//+ response.output.quickReplies[0],
+							timestamp : moment().valueOf()
+						});
+			    	}
 			    }
 			}
 		  }
