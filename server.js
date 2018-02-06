@@ -135,7 +135,7 @@ io.on('connection', function (socket) {
 				        io.to(clientInfo[socket.id].room).emit('message', {
 							name : 'System ',
 							text: response.output.text[0],
-							res : 'ok',
+							res : 'true',
 							timestamp : moment().valueOf()
 						});
 			    	}
