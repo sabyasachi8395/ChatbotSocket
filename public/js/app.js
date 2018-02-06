@@ -24,7 +24,7 @@ socket.on('message', function (message) {
 	console.log(message.text);
 	$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
 	if (message.res == 'true') {
-		$name.append('<button class=qreply>Ok</button>');		
+		$name.append('<button class=qreply value="Ok">Ok</button>');		
 	}
 });
 
@@ -33,11 +33,12 @@ var $form = $('#message-form');
 var $reply = $('.qreply');
 
 $(document).on('click', '.qreply', function () {
+	$('.qreply').hide();
 	socket.emit('message', {
 		name : "You",
-		text : $reply.val()
+		text : $('.qreply').val()
 	});
-	//alert(reply.val());
+	//alert($('.qreply').val());
 });
 
 $form.on('submit', function (event) {
