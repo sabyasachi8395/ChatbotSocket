@@ -7,6 +7,9 @@ var io = require('socket.io')(http);
 var prompt = require('prompt-sync')();
 var ConversationV1 = require('watson-developer-cloud/conversation/v1');
 
+const uuidv1 = require('uuid/v1');
+console.log(uuidv1());
+
 
 app.use(express.static(__dirname + '/public'));
 
@@ -130,15 +133,17 @@ io.on('connection', function (socket) {
 			  } else {
 			    // Display the output from dialog, if any.
 			    if (response.output.text.length != 0) {
-			    	if (response.context.check === true) {
+			    	
 			    		console.log('>> System : ' + response.output.text[0]);
 				        io.to(clientInfo[socket.id].room).emit('message', {
 							name : 'System ',
 							text: response.output.text[0],
-							res : 'true',
+							res1 : response.intents[0].intent,
+							res2 : response.intents[0].entity,
+							//flag : 'true',
 							timestamp : moment().valueOf()
 						});
-			    	}
+			    	/*}
 			    	else {
 				        console.log('>> System : ' + response.output.text[0]);
 				        io.to(clientInfo[socket.id].room).emit('message', {
@@ -146,7 +151,7 @@ io.on('connection', function (socket) {
 							text: response.output.text[0],//+ response.output.quickReplies[0],
 							timestamp : moment().valueOf()
 						});
-			    	}
+			    	}*/
 			    }
 			}
 		  }
@@ -157,7 +162,7 @@ io.on('connection', function (socket) {
 	// Executes at the start of the application to show an welcome message
 	socket.emit('message', {
 		name : 'System ',
-		text: 'Welcome to the chat application!',
+		text: 'Hello. I am a chatbot. How can I help you',
 		timestamp : moment().valueOf()
 	});
 });
