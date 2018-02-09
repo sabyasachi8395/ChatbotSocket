@@ -11,6 +11,10 @@ const request = require('request');
 const uuidv1 = require('uuid/v1');
 console.log(uuidv1);
 
+var name='';
+var pos='';//full
+var email='';
+var cno='';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -37,7 +41,7 @@ function sendCurrentUsers(socket) {
 	}
 
 	// hits when the user wants to enter any particular room
-	Object.keys(clientInfo).forEach( function(socketId) {
+	Object.keys(clientInfo).forEach(function(socketId) {
 		var userInfo = clientInfo[socketId];
 		if (userInfo.room === info.room)  {
 			users.push(userInfo.name);
@@ -48,9 +52,7 @@ function sendCurrentUsers(socket) {
 		text : 'Current Users : ' + users.join(', '),
 		timestamp : moment.valueOf()
 	})
-
 }
-
 
 io.on('connection', function (socket) {
 	console.log('User connected via socket.io!');
@@ -80,8 +82,6 @@ io.on('connection', function (socket) {
 		});
 	});
  
-
-
  	// Edit with the watson service to give automatic watson response
 	socket.on('message', function (message) {
 		// Executes when a message sends or receives, and write that message to the console.
@@ -109,6 +109,16 @@ io.on('connection', function (socket) {
 		      // Send back the context to maintain state.
 		      context : response.context,
 		   	}, processResponse)*/
+		   	
+		   	if (message.text === 'Accountant' || message.text === 'Office Staff' || message.text === 'Sales Representative') {
+		   		pos = message.text;   
+		   		io.to(clientInfo[socket.id].room).emit('message', {
+					name : 'System ',
+					text: 'Ok. Now give your personal details.',
+					res : 'name',
+					timestamp : moment().valueOf()
+	            });
+		   	}
 		  	if (message.text === 'Mumbai' || message.text === 'Kolkata' || message.text === 'Delhi') {
 		  		request({
                     url: 'http://openweathermap.org/data/2.5/weather', //URL to hit
@@ -154,21 +164,22 @@ io.on('connection', function (socket) {
 			    console.log('>> System : The current time is ' + new Date().toLocaleTimeString());
 			  }
 			  else if (response.intents[0].intent === "job_enquiry") {
-			  		request({
-                    	url: 'https://www.learnpick.in/chatbotservice/test/jobpos', //URL to hit
-                    	qs: {},
-                		}, function(error, res, body) {
-                			if (!error && res.statusCode == 200) 
-                        		var jobs = JSON.parse(body);
-                			
-                        	io.to(clientInfo[socket.id].room).emit('message', {
-								name : 'System ',
-								text: response.output.text[0],
-								reply : jobs,
-								timestamp : moment().valueOf()
-							});
-                		});
+			  	request({
+			  		url : 'https://www.learnpick.in/chatbotservice/test/jobpos',
+			  		qs : {
+			  		},
+			  	}, function(error, res, body) {
+			  		if (!error && res.statusCode==200) 
+			  			var jobs = JSON.parse(body);
+			  			io.to(clientInfo[socket.id].room).emit('message', {
+							name : 'System ',
+							text: response.output.text[0],
+							res : response.intents[0].intent,
+							timestamp : moment().valueOf()
+	                    });
+			  	});
 			  }
+			  
 			  // For all other intents and conversations
 			  else {
 			    // Display the output from dialog, if any.

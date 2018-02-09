@@ -38,14 +38,17 @@ socket.on('message', function (message) {
 	}
 	else if (message.res == 'job_enquiry') {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text);
-		for (var i=0;i<message.reply.length;i++) {
-			 var jobpos = jobs[i]['job_name'];
-			 $name.append('<button class=qreply value=jobpos>jobpos</button>  ');	
-		}
+		$name.append('<button class=qreply value="Accountant">Accountant</button>  ');
+		$name.append('<button class=qreply value="Office Staff">Office Staff</button>  ');		
+		$name.append('<button class=qreply value="Sales Representative">Sales Representative</button>  ');
 	}
 	else if (message.res == 'choose_music') {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>Ok. Playing.</p>');
 		$name.append('<button class=qreply value="Thanks">Thanks</button>');
+	}
+	else if (message.res == 'name') {
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>Enter your name :  </p>');
 	}
 	else {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
@@ -77,4 +80,3 @@ $form.on('submit', function (event) {
 
 	$message.val('');
 });
-
