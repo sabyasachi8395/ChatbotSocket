@@ -6,9 +6,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var prompt = require('prompt-sync')();
 var ConversationV1 = require('watson-developer-cloud/conversation/v1');
+const request = require('request');
 
 const uuidv1 = require('uuid/v1');
-console.log(uuidv1());
+console.log(uuidv1);
 
 
 app.use(express.static(__dirname + '/public'));
@@ -51,7 +52,6 @@ function sendCurrentUsers(socket) {
 }
 
 
-
 io.on('connection', function (socket) {
 	console.log('User connected via socket.io!');
 
@@ -84,14 +84,12 @@ io.on('connection', function (socket) {
 
  	// Edit with the watson service to give automatic watson response
 	socket.on('message', function (message) {
-		
-
 		// Executes when a message sends or receives, and write that message to the console.
 		console.log('Message received: ' + message.text);  
 
 		if (message.text === '@currentUsers') {
 			sendCurrentUsers(socket);
-		} else {
+		}else {
 			// Write the recieves or sends message to all the users of the same room.
 			message.timestamp = moment().valueOf();
 			io.to(clientInfo[socket.id].room).emit('message', message);
@@ -111,9 +109,32 @@ io.on('connection', function (socket) {
 		      // Send back the context to maintain state.
 		      context : response.context,
 		   	}, processResponse)*/
-		  
-		 // Check for action flags.
+		  	if (message.text === 'Mumbai' || message.text === 'Kolkata' || message.text === 'Delhi') {
+		  		request({
+                    url: 'http://openweathermap.org/data/2.5/weather', //URL to hit
+                    qs: {
+                    	appid: 'b6907d289e10d714a6e88b30761fae22',
+						q: message.text
+					},
+                }, function(error, response, body){
+                    if (!error && response.statusCode == 200) {
+						var weather = JSON.parse(body);
+						if (weather.hasOwnProperty("weather")) {
+	                        var weather_description=weather['weather'][0]['description'];
+	                        var temp=weather['main'].temp;
+	                        var reply="Current temperature is : "+temp+"Deg and Weather description : "+weather_description;
+	                        io.to(clientInfo[socket.id].room).emit('message', {
+								name : 'System ',
+								text: reply,
+								timestamp : moment().valueOf()
+	                       	});
+						}
+					}       
+		  		});
+     		}
+		  // Check for action flags.
 		  if (response.intents.length > 0) {
+		  	  // Display the current system time
 			  if (response.intents[0].intent === 'display_time') {
 			    // User asked what time it is, so we output the local system time.
 			    io.to(clientInfo[socket.id].room).emit('message', {
@@ -123,6 +144,7 @@ io.on('connection', function (socket) {
 				});
 			    console.log('>> System : The current time is ' + new Date().toLocaleTimeString());
 			  } 
+			  // Display the current date
 			  else if (response.intents[0].intent === "display_date") {
 			  		io.to(clientInfo[socket.id].room).emit('message', {
 					name : 'System ',
@@ -130,17 +152,32 @@ io.on('connection', function (socket) {
 					timestamp : moment().valueOf()
 				});
 			    console.log('>> System : The current time is ' + new Date().toLocaleTimeString());
-			  } else {
+			  }
+			  else if (response.intents[0].intent === "job_enquiry") {
+			  		request({
+                    	url: 'https://www.learnpick.in/chatbotservice/test/jobpos', //URL to hit
+                    	qs: {},
+                		}, function(error, res, body) {
+                			if (!error && res.statusCode == 200) 
+                        		var jobs = JSON.parse(body);
+                			
+                        	io.to(clientInfo[socket.id].room).emit('message', {
+								name : 'System ',
+								text: response.output.text[0],
+								reply : jobs,
+								timestamp : moment().valueOf()
+							});
+                		});
+			  }
+			  // For all other intents and conversations
+			  else {
 			    // Display the output from dialog, if any.
 			    if (response.output.text.length != 0) {
-			    	
 			    		console.log('>> System : ' + response.output.text[0]);
 				        io.to(clientInfo[socket.id].room).emit('message', {
 							name : 'System ',
 							text: response.output.text[0],
-							res1 : response.intents[0].intent,
-							res2 : response.intents[0].entity,
-							//flag : 'true',
+							res : response.intents[0].intent,
 							timestamp : moment().valueOf()
 						});
 			    	/*}
@@ -162,7 +199,7 @@ io.on('connection', function (socket) {
 	// Executes at the start of the application to show an welcome message
 	socket.emit('message', {
 		name : 'System ',
-		text: 'Hello. I am a chatbot. How can I help you',
+		text: 'Hello. I am a chatbot. How can I help you ?',
 		timestamp : moment().valueOf()
 	});
 });

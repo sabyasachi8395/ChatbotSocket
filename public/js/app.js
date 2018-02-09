@@ -5,7 +5,6 @@ var socket = io();
 
 console.log(name + ' wants to join ' + room);
 jQuery('.user-name').append(name);
-jQuery('.room-name').append(room);
 
 
 
@@ -25,15 +24,28 @@ socket.on('message', function (message) {
 	//alert(message.res);
 
 	
-	if (message.res === "Play_music") {
+	if (message.res == 'Play_music') {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
 		$name.append('<button class=qreply value="Classical">Classical</button>  ');
 		$name.append('<button class=qreply value="Rock">Rock</button>  ');
 		$name.append('<button class=qreply value="Pop">Pop</button>');		
 	}
-	else if (message.res === "choose_music") {
+	else if (message.res == 'weather_details') {
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '(Type the city name if not listed)</p>');
+		$name.append('<button class=qreply value="Mumbai">Mumbai</button>  ');
+		$name.append('<button class=qreply value="Delhi">Delhi</button>  ');		
+		$name.append('<button class=qreply value="Kolkata">Kolkata</button>  ');		
+	}
+	else if (message.res == 'job_enquiry') {
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text);
+		for (var i=0;i<message.reply.length;i++) {
+			 var jobpos = jobs[i]['job_name'];
+			 $name.append('<button class=qreply value=jobpos>jobpos</button>  ');	
+		}
+	}
+	else if (message.res == 'choose_music') {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>Ok. Playing.</p>');
-		$name.append('<button class=qreply value="Ok">OK</button>');
+		$name.append('<button class=qreply value="Thanks">Thanks</button>');
 	}
 	else {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
@@ -50,7 +62,7 @@ $(document).on('click', '.qreply', function () {
 		name : "You",
 		text : $(this).val()
 	});
-	//alert($('.qreply').val());
+	//alert($(this).val());
 });
 
 $form.on('submit', function (event) {
