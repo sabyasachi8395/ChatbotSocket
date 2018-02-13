@@ -12,9 +12,9 @@ const uuidv1 = require('uuid/v1');
 console.log(uuidv1);
 
 var name='';
-var pos='';//full
-var email='';
+var pos='';
 var cno='';
+var context={};
 
 app.use(express.static(__dirname + '/public'));
 
@@ -81,12 +81,13 @@ io.on('connection', function (socket) {
 			timestamp: moment().valueOf()
 		});
 	});
+
+
  
  	// Edit with the watson service to give automatic watson response
 	socket.on('message', function (message) {
 		// Executes when a message sends or receives, and write that message to the console.
 		console.log('Message received: ' + message.text);  
-
 		if (message.text === '@currentUsers') {
 			sendCurrentUsers(socket);
 		}else {
@@ -97,29 +98,25 @@ io.on('connection', function (socket) {
 		conversation.message({
 		  workspace_id: workspace_id,
 		  input: { text: message.text },
+		  context : context,
 		}, processResponse);
 		function processResponse(err, response) {
 		  if (err) {
 		    console.error(err); // something went wrong
 		    return;
 		  }
-		  /*conversation.message({
-		      workspace_id: workspace_id,
-		      input: { text: message.text },
-		      // Send back the context to maintain state.
-		      context : response.context,
-		   	}, processResponse)*/
-		   	
-		   	if (message.text === 'Accountant' || message.text === 'Office Staff' || message.text === 'Sales Representative') {
-		   		pos = message.text;   
-		   		io.to(clientInfo[socket.id].room).emit('message', {
-					name : 'System ',
-					text: 'Ok. Now give your personal details.',
-					res : 'name',
-					timestamp : moment().valueOf()
-	            });
-		   	}
-		  	if (message.text === 'Mumbai' || message.text === 'Kolkata' || message.text === 'Delhi') {
+		  context=response.context;
+		  if (response.context == 'Job_apply') {
+		  	pos = message.text;
+		  }
+		  if (response.context == 'Job_taking_name') {
+		  	name = message.text;
+		  }
+		  if (response.context == 'Job_taking_contact') {
+		  	cno = message.text;
+		  }
+
+		  if (message.text === 'Mumbai' || message.text === 'Kolkata' || message.text === 'Delhi') {
 		  		request({
                     url: 'http://openweathermap.org/data/2.5/weather', //URL to hit
                     qs: {
@@ -145,6 +142,14 @@ io.on('connection', function (socket) {
 		  // Check for action flags.
 		  if (response.intents.length > 0) {
 		  	  // Display the current system time
+		  	 /* if (response.intents[0].intent === 'Play_music') {
+		  	  		io.to(clientInfo[socket.id].room).emit('message', {
+					name : 'System ',
+					text: response.context.name,
+					timestamp : moment().valueOf()
+				});
+		  	  }*/
+
 			  if (response.intents[0].intent === 'display_time') {
 			    // User asked what time it is, so we output the local system time.
 			    io.to(clientInfo[socket.id].room).emit('message', {
@@ -171,24 +176,36 @@ io.on('connection', function (socket) {
 			  	}, function(error, res, body) {
 			  		if (!error && res.statusCode==200) 
 			  			var jobs = JSON.parse(body);
+			  			//console.log(jobs);
 			  			io.to(clientInfo[socket.id].room).emit('message', {
 							name : 'System ',
 							text: response.output.text[0],
 							res : response.intents[0].intent,
+							context : response.context.name,
 							timestamp : moment().valueOf()
 	                    });
 			  	});
 			  }
-			  
+			  else if (response.intents[0].intent === 'Choose_music') {
+			  	io.to(clientInfo[socket.id].room).emit('message', {
+							name : 'System ',
+							text: response.output.text[0],
+							res : response.intents[0].intent,
+							context : response.context.name,
+							timestamp : moment().valueOf()
+						});
+			  }			  
 			  // For all other intents and conversations
 			  else {
 			    // Display the output from dialog, if any.
 			    if (response.output.text.length != 0) {
+			    		context.name=response.context.name;
 			    		console.log('>> System : ' + response.output.text[0]);
 				        io.to(clientInfo[socket.id].room).emit('message', {
 							name : 'System ',
 							text: response.output.text[0],
 							res : response.intents[0].intent,
+							context : response.context.name,
 							timestamp : moment().valueOf()
 						});
 			    	/*}
@@ -204,6 +221,11 @@ io.on('connection', function (socket) {
 			}
 		  }
 		}
+		/*conversation.message({
+		  workspace_id: workspace_id,
+		  input: { text: message.text },
+		  context : fetchcontext
+		}, processResponse);*/
 	
 	});
 

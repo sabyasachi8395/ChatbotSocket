@@ -22,9 +22,14 @@ socket.on('message', function (message) {
 	console.log('New message:');
 	console.log(message.text);
 	//alert(message.res);
-
-	
-	if (message.res == 'Play_music') {
+	alert(message.context);
+	if (message.context == 'Job_enquiry') {
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text);
+		$name.append('<button class=qreply value="Accountant">Accountant</button>  ');
+		$name.append('<button class=qreply value="Office Staff">Office Staff</button>  ');		
+		$name.append('<button class=qreply value="Sales Representative">Sales Representative</button>  ');
+	}
+	else if (message.res == 'Play_music') {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
 		$name.append('<button class=qreply value="Classical">Classical</button>  ');
 		$name.append('<button class=qreply value="Rock">Rock</button>  ');
@@ -36,19 +41,24 @@ socket.on('message', function (message) {
 		$name.append('<button class=qreply value="Delhi">Delhi</button>  ');		
 		$name.append('<button class=qreply value="Kolkata">Kolkata</button>  ');		
 	}
-	else if (message.res == 'job_enquiry') {
-		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text);
-		$name.append('<button class=qreply value="Accountant">Accountant</button>  ');
-		$name.append('<button class=qreply value="Office Staff">Office Staff</button>  ');		
-		$name.append('<button class=qreply value="Sales Representative">Sales Representative</button>  ');
-	}
 	else if (message.res == 'choose_music') {
-		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>Ok. Playing.</p>');
+		//$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>Ok. Playing.</p>');
+		
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
 		$name.append('<button class=qreply value="Thanks">Thanks</button>');
 	}
 	else if (message.res == 'name') {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>Enter your name :  </p>');
+	} else if (message.context == 'Job_apply') {
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
+	}
+	else if (message.context == 'Job_taking_name') {
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');	
+	}
+	else if (message.context == 'Job_taking_contact') {
+		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');	
+
 	}
 	else {
 		$name.append('<p><strong>' + message.name + ' ' + momentTimestamp.local().format('h:mm a : ') + '</strong>' + message.text + '</p>');
